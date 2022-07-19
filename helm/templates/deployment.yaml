@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.fullnameOverride }}
+  labels:
+    name: {{ .Values.fullnameOverride }}
+  namespace: {{ .Values.namespaceOverride }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Values.fullnameOverride }}
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      name: {{ .Values.fullnameOverride }}
+      annotations:
+        prometheus.io/path: /metrics
+        prometheus.io/port: '9102'
+        prometheus.io/scrape: 'true'
+      labels:
+        app: {{ .Values.fullnameOverride }}
+    spec:
+      serviceAccountName: {{ .Values.serviceAccount.name }}
+      terminationGracePeriodSeconds: 30
+      containers:
+        - name: {{ .Values.fullnameOverride }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: {{ .Values.fullnameOverride }}
+              containerPort: 9102
+              protocol: TCP
+          resources:
+            limits:
+              memory: {{ .Values.resources.limits.memory }}
+            requests:
+              memory: {{ .Values.resources.requests.memory }}

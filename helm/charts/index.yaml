@@ -1,0 +1,14 @@
+apiVersion: v1
+entries:
+  event_exporter:
+  - apiVersion: v2
+    appVersion: latest
+    created: "2022-07-19T19:09:54.592375+05:30"
+    description: A Helm chart for Kubernetes
+    digest: 0bfa1ec1663cb255d9366cd1d3c7d2ad8b592115081166d9f9adce3c0765694a
+    name: event_exporter
+    type: application
+    urls:
+    - event_exporter-0.1.0.tgz
+    version: 0.1.0
+generated: "2022-07-19T19:09:54.59192+05:30"

@@ -11,9 +11,8 @@ image:
   tag: "latest"
 
 
-nameOverride: "event-exporter"
+
 fullnameOverride: "event-exporter"
-namespaceOverride: "default"
 
 serviceAccount:
   # Specifies whether a service account should be created

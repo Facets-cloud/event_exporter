@@ -5,7 +5,7 @@ metadata:
   labels:
     name: {{ .Values.clusterRoleBinding.name }}
   name: {{ .Values.clusterRoleBinding.name}}
-  namespace: {{ .Values.namespaceOverride }}
+  namespace: {{ .Release.Namespace }}
 subjects:
   - kind: ServiceAccount
     name: {{ .Values.serviceAccount.name }}

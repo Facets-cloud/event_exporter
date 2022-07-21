@@ -4,7 +4,7 @@ metadata:
   name: {{ .Values.fullnameOverride }}
   labels:
     name: {{ .Values.fullnameOverride }}
-  namespace: {{ .Values.namespaceOverride }}
+  namespace: {{ .Release.Namespace }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:

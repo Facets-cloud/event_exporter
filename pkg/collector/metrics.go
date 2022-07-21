@@ -29,13 +29,13 @@ var (
 	eventCount = promauto.NewGaugeVec(prometheus.GaugeOpts{
 		Namespace: "kube_event",
 		Subsystem: "",
-		Name:      "count",
+		Name:      "exporter",
 		Help:      "Number of kubernetes event happened",
 	}, []string{"name", "involved_object_namespace", "namespace", "involved_object_name", "involved_object_kind", "reason", "type", "message", "source"})
 	eventTotal = promauto.NewCounterVec(prometheus.CounterOpts{
 		Namespace: "kube_event",
 		Subsystem: "",
-		Name:      "unique_events_total",
+		Name:      "unique_events_exporter",
 		Help:      "Total number of kubernetes unique event happened",
 	}, []string{"name", "involved_object_namespace", "namespace", "involved_object_name", "involved_object_kind", "reason", "type", "message", "source"})
 )

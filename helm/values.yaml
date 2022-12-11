@@ -42,3 +42,4 @@ resources:
     memory: 100Mi
   requests:
     memory: 40Mi
+  tolerations: []

@@ -24,6 +24,10 @@ spec:
     spec:
       serviceAccountName: {{ .Values.serviceAccount.name }}
       terminationGracePeriodSeconds: 30
+      {{- with .Values.tolerations}}
+      tolerations:
+{{ toYaml . | nindent 8 }}      
+      {{- end }}
       containers:
         - name: {{ .Values.fullnameOverride }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"

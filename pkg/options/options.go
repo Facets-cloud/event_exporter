@@ -17,6 +17,7 @@ limitations under the License.
 package options
 
 import (
+	"encoding/json"
 	"flag"
 	"fmt"
 	"os"
@@ -25,10 +26,18 @@ import (
 	"k8s.io/klog/v2"
 )
 
+type CustomFilter struct {
+	InvolvedObjectKind      string   `json:"involved_object_kind,omitempty"`
+	InvolvedObjectName      string   `json:"involved_object_name,omitempty"`
+	InvolvedObjectNamespace string   `json:"involved_object_namespace,omitempty"`
+	EventTypes              []string `json:"even_types,omitempty"`
+}
+
 type Options struct {
 	KubeMasterURL  string
 	KubeConfigPath string
 	EventType      []string
+	CustomFilter   *CustomFilter
 	Port           int
 	Version        bool
 	flag           *pflag.FlagSet
@@ -39,6 +48,7 @@ func NewOptions() *Options {
 }
 
 func (o *Options) AddFlags() {
+	var customFilterFromArgs string
 	o.flag = pflag.NewFlagSet("", pflag.ExitOnError)
 
 	klogFlags := flag.NewFlagSet("klog", flag.ExitOnError)
@@ -50,6 +60,13 @@ func (o *Options) AddFlags() {
 	o.flag.StringArrayVar(&o.EventType, "eventType", []string{"Warning"}, "List of allowed event types. Default to warning type.")
 	o.flag.IntVar(&o.Port, "port", 9102, "Port to expose event metrics on")
 	o.flag.BoolVar(&o.Version, "version", false, "event exporter version information")
+	o.flag.StringVar(&customFilterFromArgs, "customFilter", "", "Custom filter to choose events that only needs specific event type. Eg: --customFilter='{ involved_object_kind: \"Pod\", involved_object_name: \"cluster-autoscaler\", involved_object_namespace: \"default\", even_type: ['Warning', 'Normal']}'")
+
+	var customFilter CustomFilter
+	err := json.Unmarshal([]byte(customFilterFromArgs), &customFilter)
+	if err != nil {
+		panic(err)
+	}
 
 	o.flag.Usage = func() {
 		fmt.Fprintf(os.Stderr, "Usage of %s:\n", os.Args[0])

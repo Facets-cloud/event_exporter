@@ -19,6 +19,7 @@ package filters
 import (
 	"strings"
 
+	"github.com/caicloud/event_exporter/pkg/options"
 	v1 "k8s.io/api/core/v1"
 )
 
@@ -28,19 +29,30 @@ type EventFilter interface {
 
 type EventTypeFilter struct {
 	AllowedTypes []string
+	CustomFilter options.CustomFilter
 }
 
-func NewEventTypeFilter(allowedTypes []string) *EventTypeFilter {
+func NewEventTypeFilter(allowedTypes []string, customFilter options.CustomFilter) *EventTypeFilter {
 	return &EventTypeFilter{
 		AllowedTypes: allowedTypes,
+		CustomFilter: customFilter,
 	}
 }
 
 func (e *EventTypeFilter) Filter(event *v1.Event) bool {
-	for _, allowedType := range e.AllowedTypes {
-		if strings.EqualFold(event.Type, allowedType) {
-			return true
+	if event.InvolvedObject.Kind == e.CustomFilter.InvolvedObjectKind || event.InvolvedObject.Name == e.CustomFilter.InvolvedObjectName || event.InvolvedObject.Namespace == e.CustomFilter.InvolvedObjectNamespace {
+		for _, allowedType := range e.CustomFilter.EventTypes {
+			if strings.EqualFold(event.Type, allowedType) {
+				return true
+			}
+		}
+	} else {
+		for _, allowedType := range e.AllowedTypes {
+			if strings.EqualFold(event.Type, allowedType) {
+				return true
+			}
 		}
 	}
+
 	return false
 }

@@ -40,7 +40,30 @@ func NewEventTypeFilter(allowedTypes []string, customFilter options.CustomFilter
 }
 
 func (e *EventTypeFilter) Filter(event *v1.Event) bool {
-	if event.InvolvedObject.Kind == e.CustomFilter.InvolvedObjectKind || event.InvolvedObject.Name == e.CustomFilter.InvolvedObjectName || event.InvolvedObject.Namespace == e.CustomFilter.InvolvedObjectNamespace {
+	var isMatching []bool
+	if e.CustomFilter.InvolvedObjectKind != "" {
+		if event.InvolvedObject.Kind != "" && event.InvolvedObject.Kind == e.CustomFilter.InvolvedObjectKind {
+			isMatching = append(isMatching, true)
+		} else {
+			isMatching = append(isMatching, false)
+		}
+	}
+	if e.CustomFilter.InvolvedObjectName != "" {
+		if event.InvolvedObject.Name != "" && event.InvolvedObject.Name == e.CustomFilter.InvolvedObjectName {
+			isMatching = append(isMatching, true)
+		} else {
+			isMatching = append(isMatching, false)
+		}
+	}
+	if e.CustomFilter.InvolvedObjectNamespace != "" {
+		if event.InvolvedObject.Namespace != "" && event.InvolvedObject.Namespace == e.CustomFilter.InvolvedObjectNamespace {
+			isMatching = append(isMatching, true)
+		} else {
+			isMatching = append(isMatching, false)
+		}
+	}
+
+	if any(isMatching) {
 		for _, allowedType := range e.CustomFilter.EventTypes {
 			if strings.EqualFold(event.Type, allowedType) {
 				return true
@@ -54,5 +77,14 @@ func (e *EventTypeFilter) Filter(event *v1.Event) bool {
 		}
 	}
 
+	return false
+}
+
+func any(slice []bool) bool {
+	for _, value := range slice {
+		if value {
+			return true
+		}
+	}
 	return false
 }

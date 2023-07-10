@@ -58,8 +58,9 @@ Name  | Example| Description
 kubeMasterURL|--kubeMasterURL=<APIServer-URL>|Optional. The URL of kubernetes apiserver to use as a master
 kubeConfigPath| --kubeConfigPath=$HOME/.kube/config|Optional. The path of kubernetes configuration file 
 eventType |--eventType=Warning --eventType=Normal |Optional.  List of allowed event types. The default value is `Warning` type
+customFilter |--customFilter={"InvolvedObjectKind": "Pod", "InvolvedObjectName": "cluster-autoscaler", "InvolvedObjectNamespace": "default", "EventTypes": ["Warning", "Normal"]} |Optional.  List of custom filters with allowed event types.
 port| --port=9102|Optional. Port to expose event metrics on (default 9102)
-version | --version| Print version information 
+version | --version| Print version information
 
 ## Use Kubernetes
 

@@ -17,6 +17,7 @@ limitations under the License.
 package options
 
 import (
+	"encoding/json"
 	"flag"
 	"fmt"
 	"os"
@@ -25,10 +26,33 @@ import (
 	"k8s.io/klog/v2"
 )
 
+type CustomFilter struct {
+	InvolvedObjectKind      string
+	InvolvedObjectName      string
+	InvolvedObjectNamespace string
+	EventTypes              []string
+}
+
+// Since o.flag.Var expects pflag.Value we need to cast it to pflag.Value
+// So below three methods does the job for casting
+func (this *CustomFilter) String() string {
+	b, _ := json.Marshal(*this)
+	return string(b)
+}
+
+func (this *CustomFilter) Set(s string) error {
+	return json.Unmarshal([]byte(s), this)
+}
+
+func (this *CustomFilter) Type() string {
+	return "CustomFilter"
+}
+
 type Options struct {
 	KubeMasterURL  string
 	KubeConfigPath string
 	EventType      []string
+	CustomFilter   CustomFilter
 	Port           int
 	Version        bool
 	flag           *pflag.FlagSet
@@ -40,7 +64,6 @@ func NewOptions() *Options {
 
 func (o *Options) AddFlags() {
 	o.flag = pflag.NewFlagSet("", pflag.ExitOnError)
-
 	klogFlags := flag.NewFlagSet("klog", flag.ExitOnError)
 	klog.InitFlags(klogFlags)
 	o.flag.AddGoFlagSet(klogFlags)
@@ -50,6 +73,7 @@ func (o *Options) AddFlags() {
 	o.flag.StringArrayVar(&o.EventType, "eventType", []string{"Warning"}, "List of allowed event types. Default to warning type.")
 	o.flag.IntVar(&o.Port, "port", 9102, "Port to expose event metrics on")
 	o.flag.BoolVar(&o.Version, "version", false, "event exporter version information")
+	o.flag.Var(&o.CustomFilter, "customFilter", "Custom filters to select events. Eg: --customFilter={ \"InvolvedObjectKind\": \"Pod\", \"InvolvedObjectName\": \"cluster-autoscaler\", \"InvolvedObjectNamespace\": \"default\", \"EventTypes\": [\"Warning\", \"Normal\"]}")
 
 	o.flag.Usage = func() {
 		fmt.Fprintf(os.Stderr, "Usage of %s:\n", os.Args[0])

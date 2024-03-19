@@ -56,7 +56,7 @@ build: build-local
 build-local: clean
 	@echo ">> building binaries"``
 	@GOOS=$(shell uname -s | tr A-Z a-z) GOARCH=$(ARCH) CGO_ENABLED=0	 \
-	go build -i -v -o $(OUTPUT_DIR)/event_exporter -p $(CPUS)			\
+	go build -i -v -o $(OUTPUT_DIR)/event_exporter 			\
 		 -ldflags "-s -w 										        \
 	  -X $(ROOT)/pkg/version.Version=${VERSION}							 \
 	  -X $(ROOT)/pkg/version.Branch=${BRANCH}							 \

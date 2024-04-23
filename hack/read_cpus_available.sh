@@ -1,4 +1,4 @@
-#
+#!/bin/bash
 #set -e
 #
 #CPUS_AVAILABLE=1
@@ -21,7 +21,7 @@
 #echo ${CPUS_AVAILABLE}
 
 
-#!/bin/bash
+
 
 set -e
 
@@ -29,9 +29,10 @@ CPUS_AVAILABLE=1
 
 if [ "$(uname -s)" == "Linux" ]; then
     CFS_QUOTA=$(cat /sys/fs/cgroup/cpu/cpu.cfs_quota_us)
-    if [ $CFS_QUOTA -ge 100000 ]; then
-    CPUS_AVAILABLE=$(expr ${CFS_QUOTA} / 100 / 1000)
+    if [ "$CFS_QUOTA" -ge 100000 ]; then
+    # shellcheck disable=SC2003
+    CPUS_AVAILABLE=$(expr "${CFS_QUOTA}" / 100 / 1000)
     fi
 fi
 
-echo ${CPUS_AVAILABLE}
+echo "${CPUS_AVAILABLE}"

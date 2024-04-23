@@ -60,7 +60,7 @@ build-local: clean
 
 build-arch:
 	@GOOS=$(shell uname -s | tr A-Z a-z) GOARCH=$(ARCH) CGO_ENABLED=0	 \
-	go build -i -v -o $(OUTPUT_DIR)/event_exporter 			\
+	go build -i -v -o $(OUTPUT_DIR)/event_exporter_$(ARCH) 			\
 		 -ldflags "-s -w 										        \
 	  -X $(ROOT)/pkg/version.Version=${VERSION}							 \
 	  -X $(ROOT)/pkg/version.Branch=${BRANCH}							 \

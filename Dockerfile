@@ -6,7 +6,7 @@ WORKDIR /src
 
 COPY . .
 
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=${TARGETARCH} go build -o /event_exporter .
+COPY ./bin/event_exporter_${TARGETARCH} /event_exporter
 
 FROM debian:stretch-slim
 

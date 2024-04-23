@@ -54,7 +54,11 @@ BUILD_DIR := ./build
 build: build-local
 
 build-local: clean
-	@echo ">> building binaries"``
+	@echo ">> building binaries"
+	@$(MAKE) ARCH=amd64 build-arch
+	@$(MAKE) ARCH=arm64 build-arch
+
+build-arch:
 	@GOOS=$(shell uname -s | tr A-Z a-z) GOARCH=$(ARCH) CGO_ENABLED=0	 \
 	go build -i -v -o $(OUTPUT_DIR)/event_exporter 			\
 		 -ldflags "-s -w 										        \

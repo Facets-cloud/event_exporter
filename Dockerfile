@@ -1,8 +1,18 @@
+# Dockerfile
+FROM golang:1.17 AS build
+
+ARG TARGETARCH
+WORKDIR /src
+
+COPY . .
+
+COPY ./bin/event_exporter_${TARGETARCH} /event_exporter
+
 FROM debian:stretch-slim
 
 USER nobody
 
-COPY bin/event_exporter /
+COPY --from=build /event_exporter /event_exporter
 
 ENTRYPOINT ["/event_exporter"]
 

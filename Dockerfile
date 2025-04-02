@@ -8,7 +8,7 @@ COPY . .
 
 COPY ./bin/event_exporter_${TARGETARCH} /event_exporter
 
-FROM debian:stretch-slim
+FROM debian:stable-slim
 
 USER nobody
 

@@ -1,5 +1,5 @@
 # Dockerfile
-FROM golang:1.17 AS build
+FROM golang:1.24 AS build
 
 ARG TARGETARCH
 WORKDIR /src

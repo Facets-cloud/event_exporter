@@ -1,18 +1,22 @@
 # Dockerfile
 FROM golang:1.24 AS build
 
-ARG TARGETARCH
 WORKDIR /src
+
+# Copy go.mod and go.sum first to leverage Docker cache
+COPY go.mod go.sum* ./
+
+RUN go mod download
 
 COPY . .
 
-COPY ./bin/event_exporter_${TARGETARCH} /event_exporter
+RUN CGO_ENABLED=0 GOOS=linux go build -o event_exporter ./cmd/main.go
 
 FROM debian:stable-slim
 
 USER nobody
 
-COPY --from=build /event_exporter /event_exporter
+COPY --from=build /src/event_exporter /event_exporter
 
 ENTRYPOINT ["/event_exporter"]
 
